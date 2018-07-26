@@ -57,3 +57,12 @@ Environment variables are considered valid when:
 - a bool is 'true' (case-insensitive); all other values are false
 
 Other standard types are not currently supported, but will be arriving in due course. Nested or complex types won't be. There are other packages out there for more comprehensive stuff; _config-12_ is aiming for simplicity and ease of use.
+
+## Running the tests
+
+Navigate into the package folder and run via Go:
+
+```sh
+cd config-13
+go test
+```
