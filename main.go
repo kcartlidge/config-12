@@ -1,7 +1,7 @@
 package config12
 
 import (
-	"log"
+	"fmt"
 	"os"
 	"reflect"
 	"strconv"
@@ -28,14 +28,17 @@ import (
 //   LogRequests: false,
 // }
 // settings := config12.FromEnvironment(defaults).(config)
-func FromEnvironment(c interface{}) interface{} {
+func FromEnvironment(c interface{}) (interface{}, error) {
+	return apply(os.LookupEnv, c)
+}
 
+func apply(f func(key string) (string, bool), c interface{}) (interface{}, error) {
 	// Basic sanity check
 	defaults := reflect.ValueOf(c)
 	kind := defaults.Kind()
 	if kind != reflect.Struct {
 		// Developer error - impossible to recover from
-		log.Fatalf("(FromEnvironment) expected struct, got %s", kind.String())
+		return nil, fmt.Errorf("(FromEnvironment) expected struct, got %s", kind)
 	}
 
 	// Handle every field in turn
@@ -56,7 +59,7 @@ func FromEnvironment(c interface{}) interface{} {
 			if envName, ok := field.Tag.Lookup("c12"); ok {
 
 				// Has one, so see if the variable is set
-				envValue, found := os.LookupEnv(envName)
+				envValue, found := f(envName)
 				if found && len(strings.TrimSpace(envValue)) > 0 {
 
 					// If so, update this field (by supported type)
@@ -77,5 +80,5 @@ func FromEnvironment(c interface{}) interface{} {
 	}
 
 	// Result can be cast directly to the incoming type by the caller
-	return result.Elem().Interface()
+	return result.Elem().Interface(), nil
 }
