@@ -67,9 +67,11 @@ func apply(f func(key string) (string, bool), c interface{}) (interface{}, error
 					case "string":
 						result.Elem().Field(fieldIdx).SetString(envValue)
 					case "int":
-						if intEnvValue, err := strconv.Atoi(envValue); err == nil {
-							result.Elem().Field(fieldIdx).SetInt(int64(intEnvValue))
+						intEnvValue, err := strconv.Atoi(envValue)
+						if err != nil {
+							return nil, fmt.Errorf("expected int for %s, got %s", envName, envValue)
 						}
+						result.Elem().Field(fieldIdx).SetInt(int64(intEnvValue))
 					case "bool":
 						isTrue := strings.ToLower(envValue) == "true"
 						result.Elem().Field(fieldIdx).SetBool(isTrue)

@@ -55,6 +55,12 @@ func Test_Apply_StructWithEnvVars_OverridesDefaults(t *testing.T) {
 	assert.Equal(t, false, res.BoolFalseNoDefault)
 }
 
+func Test_Apply_ExpectsInt_EnvironmentHasString_ReturnsError(t *testing.T) {
+	_, err := apply(foundInvalidInt, settings)
+
+	assert.Equal(t, "expected int for INVALID_INT, got not a number", err.Error())
+}
+
 // Stub functions to simulate os.LookupEnv
 
 func notCalled(key string) (string, bool) {
@@ -71,12 +77,18 @@ func found(key string) (string, bool) {
 		return "found", true
 	case "INT":
 		return "123", true
-	case "INVALID_INT":
-		return "not a number", true
 	case "BOOL_TRUE":
 		return "true", true
 	case "BOOL_FALSE":
 		return "whatever", true
+	}
+	return "", false
+}
+
+func foundInvalidInt(key string) (string, bool) {
+	switch key {
+	case "INVALID_INT":
+		return "not a number", true
 	}
 	return "", false
 }
