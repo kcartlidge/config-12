@@ -31,16 +31,19 @@ type config struct {
 }
 
 func main() {
-
   // Create an instance with your defaults
-  defaults := config {
+  conf := config {
     Port:        3000,
     LogRequests: false,
   }
 
   // Pass it into config-12 and you're done
-  settings := config12.FromEnvironment(defaults).(config)
-  fmt.Println("Running on port " + settings.Port)
+  s, err := config12.FromEnvironment(conf)
+  if err != nil {
+    log.Fatalln(err.Error())
+  }
+  conf = s.(config)
+  fmt.Println("Running on port " + conf.Port)
 }
 ```
 
