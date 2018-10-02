@@ -2,6 +2,14 @@
 
 Simple but powerful automatic environment variable support for easy configuration.
 
+* All your **environment variable** configuration entries are made available as a **single Go structure**
+* Provide your own environment variable name for each field in your structure
+* Supports **strings**, **integers**, and **boolean flags**
+* Validates there is *actual content* within string variables
+* Validates a *whole number* is provided for integer variables
+* Accepts *case-insensitive* 'true' for boolean flags
+* Fully tested, extremely simple, and no further dependencies
+
 ## Installation
 
 ```sh
@@ -66,6 +74,6 @@ Other standard types are not currently supported, but will be arriving in due co
 Navigate into the package folder and run via Go:
 
 ```sh
-cd config-13
+cd config-12
 go test
 ```
